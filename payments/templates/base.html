@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .container1 {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 89.7vh;
+            background-color: #f4f4f4;
+            flex-wrap: wrap;
+
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #f4f4f4;
+            padding: 0px 0px 100px 0px;
+            height: 100%;
+
+
+        }
+
+        .content,
+        .payment-options {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .content {
+            border-right: 1px solid #ccc;
+            background-color: #1D3163;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .payment-options button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+
+        }
+
+        payment-options {
+            height: 100vh;
+        }
+
+        .payment-instructions {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .payment-instructions button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .payment-instructions button:hover {
+            background-color: #0056b3;
+        }
+
+        header {
+            padding: 3px;
+            color: black;
+            height: 50px;
+        }
+
+        nav {
+            display: flex;
+
+        }
+
+        ul li {
+            display: inline;
+            padding: 30px;
+            font-size: 20px;
+        }
+
+        ul a {
+
+            text-decoration: none;
+            color: black;
+        }
+
+        footer {
+            margin-top: 185px;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-content div {
+            padding-left: 10px;
+            position: relative;
+        }
+
+        .footer-content div::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            height: 40%;
+            top: 50%;
+            transform: translateY(-50%);
+            border-left: 1px solid #FFFFFF99;
+        }
+
+        .footer-content div:first-child {
+            border-left: none;
+            padding-left: 0;
+        }
+
+        .a1 {
+            text-decoration: none;
+        }
+
+        .StripeElement1 {
+            box-sizing: border-box;
+            padding: 10px 12px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            background-color: white;
+            height: 75vh;
+            justify-content: center;
+            border: 1px solid black;
+
+            box-shadow: 0 1px 3px 0 #e6ebf1;
+            -webkit-transition: box-shadow 150ms ease;
+            transition: box-shadow 150ms ease;
+        }
+
+        .StripeElement {
+            box-sizing: border-box;
+            height: 40px;
+            padding: 10px 12px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            background-color: white;
+            box-shadow: 0 1px 3px 0 #e6ebf1;
+            transition: box-shadow 150ms ease;
+            border: 2px solid #fefde5;
+
+        }
+
+        .StripeElement1--focus {
+            box-shadow: 0 1px 3px 0 #cfd7df;
+        }
+
+        .StripeElement1--invalid {
+            border-color: #fa755a;
+        }
+
+        .StripeElement1--webkit-autofill {
+            background-color: #fefde5 !important;
+        }
+
+        #card-element {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px;
+        }
+
+
+        input {
+            box-sizing: border-box;
+            height: 40px;
+            padding: 10px 12px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 150ms ease;
+            width: 100%;
+            border: 2px solid #fefde5;
+        }
+
+        input:focus,
+        select:focus {
+            box-shadow: 0 1px 3px rgba(50, 50, 93, 0.25), 0 1px 0 rgba(0, 0, 0, 0.08);
+            outline: none;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .d1 {
+            padding-left: 200px;
+            text-align: justify;
+        }
+
+        .p1 {
+            text-align: left;
+            width: 340px;
+            height: 84px;
+            color: #FFFFFF99;
+            font-family: Mulish;
+            font-size: 22px;
+            font-weight: 400;
+            line-height: 28px;
+            letter-spacing: 1px;
+        }
+
+        .sv1 {
+            display: flex;
+            justify-content: center;
+            padding-left: 80px;
+            gap: 10px;
+        }
+
+        .footer.hidden {
+            display: none;
+        }
+        .spinner {
+        display: none;
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(0,0,0,0.1);
+        border-top-color: #000;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .hidden {
+        display: none;
+    }
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                background-color: #f4f4f4;
+                height: 100%;
+                width: 98%;
+
+
+            }
+
+            html {
+                font-size: 50%;
+
+            }
+
+            body {
+                width: 100%;
+            }
+
+            header {
+                width: 98%;
+                background-color: #007bff;
+                overflow: hidden;
+            }
+
+            .content,
+            .payment-options {
+                flex: 1;
+                padding: 0px;
+
+            }
+
+            .content {
+                border-right: 1px solid #ccc;
+                background-color: #1D3163;
+                margin: auto;
+                width: 100%;
+                height: 50vh;
+                align-items: center;
+
+            }
+
+            form {
+                flex-direction: column;
+            }
+
+            label {
+                font-size: 18px;
+            }
+
+            .d1 {
+                text-align: center;
+                padding: 20px;
+                height: 60px;
+
+            }
+
+            .p1 {
+                width: 300px;
+                height: 84px;
+                font-size: 15px;
+                text-align: center;
+            }
+
+            .sv1 {
+                padding-left: 40px;
+                justify-content: center;
+                height: 160px;
+            }
+
+            svg {
+                width: 100px;
+                height: 100px;
+            }
+
+            .StripeElement {
+                margin: 0;
+            }
+
+            .footer.global {
+                display: block;
+                width: 100%;
+            }
+
+            .footer-content {
+                display: none;
+            }
+
+            .pro-package span {
+                line-break: normal;
+                font-size: 17px;
+            }
+
+            .payment-options {
+                padding-left: 10px;
+                justify-content: center;
+            }
+
+            .payment-options button {
+                width: 90%;
+                justify-content: center;
+            }
+
+            form {
+                width: 90%;
+            }
+
+            .StripeElement {
+                width: 90;
+            }
+
+
+
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul>
+                <a href="">
+                    <li>home</li>
+                </a>
+                <a href="{% url 'club_checkout' %}">
+                    <li>Plans to sequre funding</li>
+                </a>
+
+            </ul>
+        </nav>
+    </header>
+    <div class="container1">
+        <div class="container">
+            <div class="content">
+                <div class="sv1">
+                    <svg width="66" height="83" viewBox="0 0 66 83" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        style="padding-top: 70px;">
+                        <path
+                            d="M11.5013 50.2348L2.68028 33.1943H6.58511L13.6925 47.5034H12.5126L19.6199 33.1943H23.3843L14.5633 50.2348H11.5013Z"
+                            fill="white" />
+                        <path
+                            d="M34.0629 50.4765C32.0028 50.4765 30.233 50.122 28.7535 49.4129C27.2927 48.6878 26.169 47.6726 25.3824 46.3674C24.5958 45.0461 24.2025 43.4911 24.2025 41.7024C24.2025 39.9138 24.5958 38.3668 25.3824 37.0616C26.169 35.7564 27.2927 34.7493 28.7535 34.0402C30.233 33.3151 32.0028 32.9525 34.0629 32.9525C35.4488 32.9525 36.6942 33.1217 37.7992 33.4601C38.9229 33.7985 39.8874 34.2981 40.6927 34.9587L39.5128 37.4242C38.6326 36.8118 37.7804 36.3768 36.9564 36.1189C36.1511 35.845 35.224 35.708 34.1753 35.708C32.1713 35.708 30.6356 36.2317 29.5681 37.2791C28.5194 38.3104 27.995 39.7849 27.995 41.7024C27.995 43.62 28.5194 45.1025 29.5681 46.1499C30.6356 47.1973 32.1713 47.721 34.1753 47.721C35.224 47.721 36.1511 47.5921 36.9564 47.3342C37.7804 47.0603 38.6326 46.6091 39.5128 45.9807L40.6927 48.4461C39.8874 49.0907 38.9229 49.5902 37.7992 49.9447C36.6942 50.2992 35.4488 50.4765 34.0629 50.4765Z"
+                            fill="white" />
+                        <path
+                            d="M44.0798 50.2348V33.1943H46.8047L58.2945 45.9807H57.5641V33.1943H60.9352V50.2348H58.2102L46.7486 37.4483H47.4509V50.2348H44.0798Z"
+                            fill="white" />
+                        <path
+                            d="M32.9756 9.56237e-06C40.5688 -0.0199214 65.9512 31.1237 65.9512 31.1237C65.9512 31.1237 46.5137 18.929 32.9752 19.6571C19.4367 20.3851 0 31.1237 0 31.1237C0 31.1237 25.3824 0.0199406 32.9756 9.56237e-06Z"
+                            fill="white" />
+                        <path
+                            d="M33.0244 82.9966C26.536 82.6142 0.0488273 51.8729 0.0488273 51.8729C0.0488273 51.8729 19.4863 64.0675 33.0248 63.3395C46.5632 62.6114 66 51.8728 66 51.8728C66 51.8728 39.5128 83.3789 33.0244 82.9966Z"
+                            fill="white" />
+                    </svg>
+
+                    <div style="padding-right: 85px; padding-top: 70px;">
+                        <span style="text-align: left; width: 314.46px; height: 83px;">
+                            <p style="color: #fff; font-size: 20px; line-height: 2px; font-weight: 700;">
+                                <b>
+                                    <span>VCN</span>
+                                </b>
+                            </p>
+                            <p class="pro-package">
+                                <b>
+                                    <span
+                                        style="color: #fff; font-size: 40px; font-family: Mulish; padding-top: 40px;">PRO
+                                    </span> <strong style="color: #fff; font-size: 20px;">Package</strong>
+                                </b>
+
+                            </p>
+                        </span>
+                    </div>
+                </div>
+                <div class="d1">
+                    <p class="p1">Elevating Startup to new <br>heights through funding and <br>partnerships</p>
+                </div>
+                <div style="padding-right: 70px;">
+                    <h1 style="font-family:Segoe UI; font-weight: 600; font-size: 36px; line-height: 46.8px; letter-spacing: -0.48px;
+                 color: #FFFFFF99;">$10,497.00 <span style="font-size: 14px;">per project</span></h1>
+                </div>
+                <footer>
+                    <div class="footer-content">
+                        <div style=" color: #FFFFFF99;">powerd by <strong>paypal</strong></div>
+                        <div style=" color: #FFFFFF99;">
+                            <p style="word-spacing: 10px;">terms privacy</p>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+
+            <div class="payment-options">
+                <h2>Select a Payment Method</h2>
+                <button onclick="showPayment('paypal')"
+                    style="display: flex; align-items: center; justify-content: center; background-color: #17B091; border-radius: 6px;">
+                    <div class="log" style="padding-right: 10px; height: 35px;">
+                        <img src="https://th.bing.com/th/id/OIP.w1SWHuktu2scWxh9swjnQwAAAA?w=360&h=360&rs=1&pid=ImgDetMain"
+                            alt="" style="width: 40px;height: 40px; border-radius: 20px;">
+                    </div>
+                    <div class="log1" style="height: 5px;">
+                        <strong> Pay with PayPal</strong>
+                    </div>
+                </button>
+                <button onclick="showPayment('cashapp')" style="display: flex; align-items: center; justify-content: center; background-color: #17B091;
+                border-radius: 6px;
+                 ">
+                    <div class="log" style="padding-right: 8px; height: 35px;">
+                        <img src="https://th.bing.com/th/id/OIP.DzuO8O_PJnhBxbirZ5uaMgAAAA?w=335&h=329&rs=1&pid=ImgDetMain"
+                            alt="" style="width: 40px;height: 40px; border-radius: 20px;">
+                    </div>
+                    <div class="log1" style="height: 10px;">
+                        <strong> Pay with Cash App</strong>
+                    </div>
+                </button>
+
+                <div id="paypal" class="payment-instructions">
+                    <h3>Pay with PayPal</h3>
+
+                    <p>You will be redirected to PayPal to complete your payment.</p>
+                    <a class="a1" href="{% url 'create_payment' %}" target="_blank">
+                        <button><strong>PAY</strong></button>
+                    </a>
+                </div>
+
+                <div id="cashapp" class="payment-instructions">
+                    <h3>Pay with Cash App</h3>
+                    <p>To complete your payment, please click the button below and follow the instructions.</p>
+                    <p>go to your cashapp acount</p>
+                    <p>Enter the followins on account number</p>
+                    <a class="a1" href="https://cash.app/$yourcashtag/amount" target="_blank">
+                        <button>PAY WITH CASH APP</button>
+                    </a>
+                </div>
+                <div class="StripeElement1">
+                    <form id="stripe-form" action="{% url 'create_project_stripe_payment_intent' %}" method="POST">
+                        {% csrf_token %}
+                        <div>
+                            <label for="email">Email</label><br>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding-top: 5px;">
+                            <label for="card-number">Card Information</label> <br>
+                            <div>
+                                <svg width="24" height="17" viewBox="0 0 24 17" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <g clip-path="url(#clip0_1361_76)">
+                                        <g clip-path="url(#clip1_1361_76)">
+                                            <g clip-path="url(#clip2_1361_76)">
+                                                <path
+                                                    d="M21.75 1.04004H2.25C1.14543 1.04004 0.25 1.93547 0.25 3.04004V14.54C0.25 15.6446 1.14543 16.54 2.25 16.54H21.75C22.8546 16.54 23.75 15.6446 23.75 14.54V3.04004C23.75 1.93547 22.8546 1.04004 21.75 1.04004Z"
+                                                    fill="white" stroke="black" stroke-opacity="0.2"
+                                                    stroke-width="0.5" />
+                                                <path
+                                                    d="M2.78773 6.70448C2.26459 6.41754 1.66754 6.18678 1 6.02663L1.028 5.90192H3.76498C4.13596 5.91492 4.43699 6.02655 4.53495 6.42075L5.12977 9.25663L5.31198 10.1108L6.97797 5.90192H8.77679L6.10288 12.0676H4.30397L2.78773 6.70448ZM10.1 12.0741H8.39883L9.46285 5.90192H11.1639L10.1 12.0741ZM16.2668 6.05281L16.0354 7.38562L15.8816 7.32008C15.5737 7.19529 15.1674 7.07057 14.6144 7.08375C13.9427 7.08375 13.6415 7.35281 13.6345 7.6155C13.6345 7.90445 13.9989 8.09488 14.5939 8.37729C15.574 8.81723 16.0286 9.3556 16.0218 10.0582C16.0081 11.3387 14.846 12.1661 13.0611 12.1661C12.2979 12.1595 11.5628 12.0081 11.1638 11.8376L11.4019 10.4521L11.6259 10.5507C12.1789 10.7807 12.5428 10.879 13.222 10.879C13.7118 10.879 14.2369 10.6884 14.2436 10.2749C14.2436 10.0057 14.0199 9.80854 13.3617 9.5065C12.7178 9.21091 11.8568 8.71852 11.8708 7.83202C11.8781 6.63046 13.0611 5.79004 14.741 5.79004C15.399 5.79004 15.9312 5.92793 16.2668 6.05281ZM18.5278 9.88752H19.9417C19.8718 9.57893 19.5496 8.10151 19.5496 8.10151L19.4307 7.56968C19.3467 7.79947 19.1999 8.17377 19.2069 8.1606C19.2069 8.1606 18.6678 9.53294 18.5278 9.88752ZM20.6276 5.90192L22 12.074H20.4249C20.4249 12.074 20.2708 11.3649 20.2219 11.1482H18.0378C17.9746 11.3122 17.6808 12.074 17.6808 12.074H15.8958L18.4226 6.41403C18.5977 6.01345 18.906 5.90192 19.3118 5.90192H20.6276Z"
+                                                    fill="#1434CB" />
+                                            </g>
+                                        </g>
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0_1361_76">
+                                            <rect width="24" height="16" fill="white"
+                                                transform="translate(0 0.790039)" />
+                                        </clipPath>
+                                        <clipPath id="clip1_1361_76">
+                                            <rect width="24" height="16" fill="white"
+                                                transform="translate(0 0.790039)" />
+                                        </clipPath>
+                                        <clipPath id="clip2_1361_76">
+                                            <rect width="24" height="16" fill="white"
+                                                transform="translate(0 0.790039)" />
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+
+                                <svg width="28" height="17" viewBox="0 0 28 17" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <g clip-path="url(#clip0_1361_86)">
+                                        <g clip-path="url(#clip1_1361_86)">
+                                            <g clip-path="url(#clip2_1361_86)">
+                                                <path
+                                                    d="M22 0.790039H2C0.89543 0.790039 0 1.68547 0 2.79004V14.79C0 15.8946 0.89543 16.79 2 16.79H22C23.1046 16.79 24 15.8946 24 14.79V2.79004C24 1.68547 23.1046 0.790039 22 0.790039Z"
+                                                    fill="#252525" />
+                                                <path
+                                                    d="M9 13.79C11.7614 13.79 14 11.5515 14 8.79004C14 6.02862 11.7614 3.79004 9 3.79004C6.23858 3.79004 4 6.02862 4 8.79004C4 11.5515 6.23858 13.79 9 13.79Z"
+                                                    fill="#EB001B" />
+                                                <path
+                                                    d="M15 13.79C17.7614 13.79 20 11.5515 20 8.79004C20 6.02862 17.7614 3.79004 15 3.79004C12.2386 3.79004 10 6.02862 10 8.79004C10 11.5515 12.2386 13.79 15 13.79Z"
+                                                    fill="#F79E1B" />
+                                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                                    d="M12 4.78967C13.2144 5.70188 14 7.15422 14 8.79004C14 10.4259 13.2144 11.8782 12 12.7904C10.7856 11.8782 10 10.4259 10 8.79004C10 7.15422 10.7856 5.70188 12 4.78967Z"
+                                                    fill="#FF5F00" />
+                                            </g>
+                                        </g>
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0_1361_86">
+                                            <rect width="24" height="16" fill="white"
+                                                transform="translate(0 0.790039)" />
+                                        </clipPath>
+                                        <clipPath id="clip1_1361_86">
+                                            <rect width="24" height="16" fill="white"
+                                                transform="translate(0 0.790039)" />
+                                        </clipPath>
+                                        <clipPath id="clip2_1361_86">
+                                            <rect width="24" height="16" fill="white"
+                                                transform="translate(0 0.790039)" />
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+                                <svg width="28" height="17" viewBox="0 0 28 17" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <g clip-path="url(#clip0_1361_96)">
+                                        <g clip-path="url(#clip1_1361_96)">
+                                            <g clip-path="url(#clip2_1361_96)">
+                                                <path
+                                                    d="M22 0.790039H2C0.89543 0.790039 0 1.68547 0 2.79004V14.79C0 15.8946 0.89543 16.79 2 16.79H22C23.1046 16.79 24 15.8946 24 14.79V2.79004C24 1.68547 23.1046 0.790039 22 0.790039Z"
+                                                    fill="#016FD0" />
+                                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                                    d="M13.7637 14.1839V8.48248L23.9112 8.49159V10.0665L22.7383 11.3199L23.9112 12.5848V14.1931H22.0386L21.0434 13.0949L20.0553 14.1972L13.7637 14.1839Z"
+                                                    fill="#FFFFFE" />
+                                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                                    d="M14.4414 13.5588V9.10992H18.2137V10.1348H15.6628V10.8305H18.1529V11.8383H15.6628V12.5216H18.2137V13.5588H14.4414Z"
+                                                    fill="#016FD0" />
+                                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                                    d="M18.1954 13.5588L20.2827 11.3318L18.1953 9.11005H19.811L21.0865 10.5201L22.3656 9.11005H23.9117V9.14505L21.8689 11.3318L23.9117 13.4957V13.5588H22.35L21.0519 12.1347L19.7671 13.5588H18.1954Z"
+                                                    fill="#016FD0" />
+                                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                                    d="M14.2369 3.422H16.6829L17.5421 5.37285V3.422H20.5619L21.0827 4.88357L21.6052 3.422H23.9111V9.12339H11.7246L14.2369 3.422Z"
+                                                    fill="#FFFFFE" />
+                                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                                    d="M14.7006 4.04144L12.7266 8.48661H14.0805L14.4529 7.59645H16.4708L16.843 8.48661H18.2306L16.2648 4.04144H14.7006ZM14.8702 6.59888L15.4622 5.18381L16.0538 6.59888H14.8702Z"
+                                                    fill="#016FD0" />
+                                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                                    d="M18.2129 8.48579V4.04071L20.116 4.04725L21.0953 6.77998L22.0809 4.04071H23.9125V8.48579L22.7339 8.49622V5.44288L21.6213 8.48579H20.5455L19.4099 5.43245V8.48579H18.2129Z"
+                                                    fill="#016FD0" />
+                                            </g>
+                                        </g>
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0_1361_96">
+                                            <rect width="24" height="16" fill="white"
+                                                transform="translate(0 0.790039)" />
+                                        </clipPath>
+                                        <clipPath id="clip1_1361_96">
+                                            <rect width="24" height="16" fill="white"
+                                                transform="translate(0 0.790039)" />
+                                        </clipPath>
+                                        <clipPath id="clip2_1361_96">
+                                            <rect width="24" height="16" fill="white"
+                                                transform="translate(0 0.790039)" />
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+                                <svg width="28" height="17" viewBox="0 0 28 17" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <g clip-path="url(#clip0_1361_110)">
+                                        <g clip-path="url(#clip1_1361_110)">
+                                            <g clip-path="url(#clip2_1361_110)">
+                                                <path
+                                                    d="M21.9972 16.54L21.9994 16.54C22.9545 16.5481 23.7381 15.7673 23.75 14.7942L23.75 2.79634C23.7462 2.32573 23.5589 1.87621 23.2297 1.54684C22.9014 1.21831 22.4589 1.03619 21.9972 1.04011L2.00064 1.0401C1.54109 1.03619 1.09858 1.21831 0.770279 1.54684C0.441145 1.87621 0.253838 2.32573 0.250008 2.7943L0.25 14.7837C0.253838 15.2543 0.441145 15.7039 0.770279 16.0332C1.09858 16.3618 1.54109 16.5439 2.00277 16.54H21.9972ZM21.9962 17.04L21.9951 17.04L21.9972 17.04H21.9962Z"
+                                                    fill="white" stroke="black" stroke-opacity="0.2"
+                                                    stroke-width="0.5" />
+                                                <path
+                                                    d="M12.6133 16.7899H21.9981C22.5249 16.7944 23.0318 16.5893 23.4074 16.2199C23.783 15.8505 23.9965 15.3471 24.0009 14.8203V12.4617C20.457 14.496 16.6137 15.9568 12.6133 16.7899Z"
+                                                    fill="#F27712" />
+                                                <path
+                                                    d="M23.173 10.0865H22.3205L21.3605 8.82033H21.2695V10.0865H20.5743V6.94171H21.6005C22.4033 6.94171 22.8667 7.27274 22.8667 7.8686C22.8667 8.35688 22.5771 8.67136 22.0557 8.77067L23.173 10.0865ZM22.1467 7.89343C22.1467 7.58722 21.915 7.42998 21.4847 7.42998H21.2695V8.38171H21.4681C21.915 8.38171 22.1467 8.21619 22.1467 7.89343ZM18.1412 6.94171H20.1109V7.47136H18.8364V8.17481H20.0612V8.71274H18.8364V9.56515H20.1109V10.0948H18.1412V6.94171ZM15.9067 10.1693L14.4005 6.93343H15.1619L16.1136 9.05205L17.0736 6.93343H17.8185L16.2957 10.1693H15.9233H15.9067ZM9.60881 10.161C8.5495 10.161 7.72192 9.44102 7.72192 8.50584C7.72192 7.5955 8.56606 6.85895 9.62537 6.85895C9.9233 6.85895 10.1716 6.91688 10.4778 7.04929V7.77757C10.2459 7.54975 9.93389 7.42197 9.60881 7.42171C8.94674 7.42171 8.44192 7.90171 8.44192 8.50584C8.44192 9.14309 8.93847 9.59826 9.64192 9.59826C9.9564 9.59826 10.1964 9.49895 10.4778 9.25067V9.97895C10.1633 10.1114 9.89847 10.161 9.60881 10.161ZM7.50675 9.12653C7.50675 9.73895 7.00192 10.161 6.27364 10.161C5.74399 10.161 5.3633 9.97895 5.04054 9.56515L5.49571 9.17619C5.65295 9.45757 5.91778 9.59826 6.24881 9.59826C6.5633 9.59826 6.78675 9.40791 6.78675 9.15964C6.78675 9.01895 6.72054 8.91136 6.57985 8.8286C6.42559 8.75375 6.26495 8.69281 6.09985 8.64653C5.44606 8.43964 5.22261 8.21619 5.22261 7.77757C5.22261 7.26446 5.70261 6.8755 6.33157 6.8755C6.72882 6.8755 7.08468 6.99964 7.38261 7.23136L7.01847 7.64515C6.87415 7.48693 6.66987 7.39681 6.45571 7.39688C6.15778 7.39688 5.94261 7.54584 5.94261 7.74446C5.94261 7.90998 6.06675 8.00102 6.48054 8.14171C7.27502 8.38998 7.50675 8.62171 7.50675 9.13481V9.12653ZM4.08881 6.94171H4.78399V10.0948H4.08881V6.94171ZM1.85433 10.0948H0.828125V6.94171H1.85433C2.97985 6.94171 3.75778 7.58722 3.75778 8.51412C3.75778 8.98584 3.52606 9.43274 3.12054 9.73067C2.77295 9.97895 2.38399 10.0948 1.84606 10.0948H1.85433ZM2.66537 7.72791C2.43364 7.54584 2.16881 7.47964 1.71364 7.47964H1.5233V9.56515H1.71364C2.16054 9.56515 2.44192 9.4824 2.66537 9.31688C2.90537 9.11826 3.04606 8.82033 3.04606 8.51412C3.04606 8.20791 2.90537 7.91826 2.66537 7.72791Z"
+                                                    fill="black" />
+                                                <path
+                                                    d="M12.413 6.85895C11.5026 6.85895 10.7578 7.58722 10.7578 8.48929C10.7578 9.44929 11.4695 10.1693 12.413 10.1693C13.3399 10.1693 14.0682 9.44102 14.0682 8.51412C14.0682 7.58722 13.3482 6.85895 12.413 6.85895Z"
+                                                    fill="#F27712" />
+                                            </g>
+                                        </g>
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0_1361_110">
+                                            <rect width="24" height="16" fill="white"
+                                                transform="translate(0 0.790039)" />
+                                        </clipPath>
+                                        <clipPath id="clip1_1361_110">
+                                            <rect width="24" height="16" fill="white"
+                                                transform="translate(0 0.790039)" />
+                                        </clipPath>
+                                        <clipPath id="clip2_1361_110">
+                                            <rect width="24" height="16" fill="white"
+                                                transform="translate(0 0.790039)" />
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+
+
+                            </div>
+                        </div>
+                        <div id="card-element">
+                            <div id="card-number" class="StripeElement" style="width: 50%;"></div>
+                            <div id="card-cvc" class="StripeElement" style="width: 50%;"></div>
+                            <div id="card-postal-code-element" class="StripeElement"  style="width: 50%;"></div>
+                        </div>
+                        <label for="card-expiry">Expiration Date</label>
+                        <div id="card-expiry-element" class="stripe-element"></div>
+
+
+                        
+                        <div>
+                            <label for="full_name">card name holder</label><br>
+                            <input type="text" id="full_name" name="full_name" required>
+                        </div>
+
+                        <div>
+                            <label for="country">Country</label><br>
+                            <select id="country" name="country" required>
+                                <option value="">Select a country</option>
+                                <option value="US">United States</option>
+                                <option value="CA">Canada</option>
+                                <option value="GB">United Kingdom</option>
+                                <option value="AU">Australia</option>
+                                <option value="FR">France</option>
+                                <option value="DE">Germany</option>
+                                <!-- Add more countries as needed -->
+                            </select>
+                        </div>
+
+                        <div style="display: flex; padding-left: 3px; padding: 10px;">
+                            <input type="checkbox" id="save-details" name="save-details"
+                                style="width: 17px; height: 17px;">
+                            <label for="save-details" style="padding-left: 7px;">Save payment details for future
+                                use</label>
+                        </div>
+                        <div id="card-errors" role="alert"></div>
+                        <button type="submit">Pay with Card
+                        </button>
+                    </form>
+                    <div id="loading-spinner" class="spinner">loading</div>
+                    
+                    <div style="display: block;">
+                        {% if messages %}
+                        <ul>
+                            {% for message in messages %}
+                                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                                    {{ message }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    </div></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showPayment(method) {
+            document.querySelectorAll('.payment-instructions').forEach(function (el) {
+                el.style.display = 'none';
+            });
+            document.getElementById(method).style.display = 'block';
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+        var csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        var stripe = Stripe('pk_test_51Pat9FDKWUKEztwnr2bZCNb1Ia9izmhDoSy9H6kMjbgnWHGAhipYyHIFdR40apqOh8vj87K1VYhktfGsHUlqk80P000HKs1ACz');
+        var elements = stripe.elements();
+        var cardNumber = elements.create('cardNumber', {style: style});
+        cardNumber.mount('#card-number');
+        var cardExpiry = elements.create('cardExpiry', {style: style});
+         cardExpiry.mount('#card-expiry-element');
+        var cardCvc = elements.create('cardCvc', {style: style});
+        cardCvc.mount('#card-cvc');
+        var cardPostalCode = elements.create('postalCode', {style: style});
+        cardPostalCode.mount('#card-postal-code-element');
+       
+       
+        var style = {
+            base: {
+                color: '#32325d',
+                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                fontSmoothing: 'antialiased',
+                fontSize: '16px',
+                '::placeholder': {
+                    color: '#aab7c4',
+                    height: '300px'
+                }
+            },
+            invalid: {
+                color: '#fa755a',
+                iconColor: '#fa755a'
+            }
+        };
+
+        // Handle real-time validation errors from the card Element
+        cardNumber.on('change', function (event) {
+            var displayError = document.getElementById('card-errors');
+            if (event.error) {
+                displayError.textContent = event.error.message;
+            } else {
+                displayError.textContent = '';
+            }
+        });
+
+        // Handle form submission
+        var form = document.getElementById('stripe-form');
+        const spinner = document.getElementById('loading-spinner');
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            spinner.classList.remove('hidden');
+
+            stripe.createPaymentMethod({
+                type: 'card',
+                card: cardNumber,
+                billing_details: {
+                    email: document.getElementById('email').value,
+                    address: {
+                        country: document.getElementById('country').value,
+                    },
+                },
+            }).then(function (result) {
+                if (result.error) {
+                    // Display error.message in your UI
+                    var errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = result.error.message;
+                    spinner.classList.add('hidden');
+                } else {
+                    // Send the payment method ID to your server
+                    fetch("{% url 'create_project_stripe_payment_intent' %}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken':  csrftoken,
+                        },
+                        body: JSON.stringify({
+                            payment_method: result.paymentMethod.id,
+                            email: document.getElementById('email').value,
+                            country: document.getElementById('country').value,
+                            name: document.getElementById('full_name').value,
+                            save_details: document.getElementById('save-details').checked
+                        })
+                    }).then(function (result) {
+                        return result.json();
+                    }).then(function (response) {
+                        if (response.error) {
+                            // error  Handling
+                            document.getElementById('card-errors').textContent = response.error;
+                            spinner.classList.add('hidden');
+                        } else {
+                            stripe.confirmCardPayment(response.client_secret).then(function (result) {
+                                if (result.error) {
+                                    // Display error.message in your UI
+                                    document.getElementById('card-errors').textContent = result.error.message;
+                                    spinner.classList.add('hidden');
+                                } else {
+                                    if (result.paymentIntent.status === 'succeeded') {
+                                    window.location.href = "{% url 'payment_success' %}";
+                                }
+                            }
+                            });
+                        }
+                    });
+                }
+            });
+        });
+        });
+   
+    </script>
+
+</body>
+
+</html>
